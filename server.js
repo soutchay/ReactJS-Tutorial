@@ -3,6 +3,12 @@ var app = express();
 var path = require('path');
 var router = express.Router();
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+
+
+mongoose.connect('mongodb://react:react@ds053429.mongolab.com:53429/react-tut');
+
+var Comment = require('./app/models/comment.js');
 
 //Set View Engine
 app.set("view engine", 'ejs');
@@ -23,8 +29,20 @@ router.route('/')
     res.status(200).render("index");
   });
 
-app.use(router);
+//Set up API route
+var apiRouter = express.Router();
 
+apiRouter.route('/')
+  .get(function(req, res){
+    Comment.find(function(error, data){
+      if(error){console.log('error no data');}
+      res.json(data);
+    });
+  });
+
+
+app.use(router);
+app.use('/api', apiRouter);
 port = process.env.PORT || 1234;
 app.listen(port);
 console.log("Listening on port", port);
