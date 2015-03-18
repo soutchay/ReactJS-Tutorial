@@ -27,6 +27,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 router.route('/')
   .get(function(req, res){
     res.status(200).render("index");
+    Comment.find(function(error, data){
+      if(error){console.log('error');}
+      res.json(data);
+    });
+  })
+  .post(function(req, res){
+    var newComment = new Comment();
+    newComment.author = req.body.author;
+    newComment.comment = req.body.comment;
+    newComment.save();
   });
 
 //Set up API route

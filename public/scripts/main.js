@@ -18,6 +18,24 @@ var CommentBox = React.createClass({
   getInitialState: function(){
     return ({data:[]});
   },
+  //Set up polling
+  loadCommentsFromServer: function(){
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      success: function(data){
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err){
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  //Method is called when React component rendered
+  componentDidMount: function(){
+    this.loadCommentsFromServer();
+    setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+  },
   render: function(){
     return (
       <div className="commentBox">
@@ -102,6 +120,6 @@ var Comment = React.createClass({
 //calls render property to instantiate component and fires function to append CommentBox to id="content"
 //call on data to be var data defined above
 React.render(
-  <CommentBox data={data}/>,
+  <CommentBox data={data} pollInterval={2000}/>,
   document.getElementById('content')
   )
