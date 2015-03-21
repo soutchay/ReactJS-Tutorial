@@ -14,10 +14,6 @@ var data = [
 // data={this.props.data} allows CommentList to have access to data
 //this.prop are immutable but this.state is mutable which can be changed by calling this.setState()
 var CommentBox = React.createClass({
-  //set up initial state of component
-  getInitialState: function(){
-    return ({data:[]});
-  },
   //Set up polling
   loadCommentsFromServer: function(){
     $.ajax({
@@ -30,6 +26,10 @@ var CommentBox = React.createClass({
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
+  },
+  //set up initial state of component
+  getInitialState: function(){
+    return ({data:[]});
   },
   //Method is called when React component rendered
   componentDidMount: function(){
@@ -89,10 +89,26 @@ var CommentList = React.createClass({
 
 //*****COMMENT FORM******
 var CommentForm = React.createClass({
+  handleSubmit: function(e){
+    e.preventDefault();
+    var author = React.findDOMNode(this.refs.author).value.trim();
+    var text = React.findDOMNode(this.refs.text).value.trim();
+    if (!text || !author){
+      return;
+    }
+    //send request to server
+    React.findDOMNode(this.refs.author).value = '';
+    React.findDOMNode(this.refs.text).value = '';
+  },
   render: function(){
     return (
     <div className="commentForm">
       Comment Form would go here
+      <form>
+        <input type="text" placeholder="Author" />
+        <input type="text" placeholder="Make a comment" />
+        <input type="submit" value="Post" />
+      </form>
     </div>
     );
   }
@@ -120,6 +136,6 @@ var Comment = React.createClass({
 //calls render property to instantiate component and fires function to append CommentBox to id="content"
 //call on data to be var data defined above
 React.render(
-  <CommentBox data={data} pollInterval={2000}/>,
+  <CommentBox data={data} url="/api" pollInterval={2000}/>,
   document.getElementById('content')
   )

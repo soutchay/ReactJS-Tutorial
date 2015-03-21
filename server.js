@@ -26,10 +26,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 //Set up route for root page
 router.route('/')
   .get(function(req, res){
-    res.status(200).render("index");
+    res.render("index");
     Comment.find(function(error, data){
       if(error){console.log('error');}
-      res.json(data);
     });
   })
   .post(function(req, res){
