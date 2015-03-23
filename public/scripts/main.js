@@ -29,7 +29,11 @@ var CommentBox = React.createClass({
     });
   },
   handleCommentSubmit: function(comment){
+    console.log(comment);
     //submit to server and refresh comment list
+    var comments = this.state.data;
+    var newComments = comments.concat([comment]);
+    this.setState({data: newComments});
     $.ajax({
       url: this.props.url,
       dataType: 'json',
@@ -141,10 +145,11 @@ var Comment = React.createClass({
   render: function(){
     //so we can have an XSS attack, FB says to do add this for Showdown to work
     var rawMarkup = converter.makeHtml(this.props.children.toString());
+    //this.props.author is being passed from CommentList
     return (
     <div className="comment">
       <h2 className="commentAuthor">
-        {this.props.author} (This is being passed from the CommentList)
+        {this.props.author}
       </h2>
       <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
     </div>
