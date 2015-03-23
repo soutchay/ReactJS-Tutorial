@@ -5,6 +5,9 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
+//Set up body parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 mongoose.connect('mongodb://react:react@ds053429.mongolab.com:53429/react-tut');
 
@@ -17,10 +20,6 @@ app.set("view engine", 'ejs');
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.static(__dirname + '/bower_components'));
 app.set('views', __dirname + '/public/views');
-
-//Set up body parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
 
 //Set up route for root page
@@ -47,10 +46,19 @@ apiRouter.route('/')
       if(error){console.log('error no data');}
       res.json(data);
     });
+  })
+  .post(function(req, res){
+    var newComment = new Comment();
+    newComment.author = req.body.author;
+    newComment.comment = req.body.comment;
+    newComment.save(function(error){
+      if(error){res.send(error);}
+      res.status(201).json({message: 'planet successfully created'+ req.body.author+ req.body.comment});
+    });
   });
 
 
-app.use(router);
+app.use('/', router);
 app.use('/api', apiRouter);
 port = process.env.PORT || 1234;
 app.listen(port);
