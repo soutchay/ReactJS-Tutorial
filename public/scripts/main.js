@@ -20,7 +20,7 @@ var CommentBox = React.createClass({
       url: this.props.url,
       dataType: 'json',
       success: function(data){
-        console.log(data);
+        //console.log(data);
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err){
@@ -28,7 +28,7 @@ var CommentBox = React.createClass({
       }.bind(this)
     });
   },
-  handleCommentSubmit: function(){
+  handleCommentSubmit: function(comment){
     //submit to server and refresh comment list
     $.ajax({
       url: this.props.url,
@@ -36,6 +36,7 @@ var CommentBox = React.createClass({
       type: 'POST',
       data: comment,
       success: function(data) {
+        console.log("submitting ", data);
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
@@ -108,12 +109,13 @@ var CommentList = React.createClass({
 var CommentForm = React.createClass({
   handleSubmit: function(e){
     e.preventDefault();
+    console.log(this.refs);
     var author = React.findDOMNode(this.refs.author).value.trim();
     var text = React.findDOMNode(this.refs.text).value.trim();
     if (!text || !author){
       return;
     }
-    this.props.onCommentSubmit({author: author, text: text});
+    this.props.onCommentSubmit({author: author, comment: text});
     //send request to server
     React.findDOMNode(this.refs.author).value = '';
     React.findDOMNode(this.refs.text).value = '';
@@ -122,9 +124,9 @@ var CommentForm = React.createClass({
     return (
     <div className="commentForm">
       Comment Form would go here
-      <form>
-        <input type="text" placeholder="Author" />
-        <input type="text" placeholder="Make a comment" />
+      <form className="commentForm" onSubmit={this.handleSubmit}>
+        <input type="text" ref="author" placeholder="Author" />
+        <input type="text" ref="text" placeholder="Make a comment" />
         <input type="submit" value="Post" />
       </form>
     </div>

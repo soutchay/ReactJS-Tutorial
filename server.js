@@ -31,10 +31,14 @@ router.route('/')
     });
   })
   .post(function(req, res){
+    console.log(req.body);
     var newComment = new Comment();
     newComment.author = req.body.author;
     newComment.comment = req.body.comment;
-    newComment.save();
+    newComment.save(function(error){
+      if(error){res.send(error);}
+      res.status(201).json({message: 'comment successfully created'+ req.body.author+ req.body.comment});
+    });
   });
 
 //Set up API route
@@ -48,12 +52,13 @@ apiRouter.route('/')
     });
   })
   .post(function(req, res){
+    console.log(req.body);
     var newComment = new Comment();
     newComment.author = req.body.author;
     newComment.comment = req.body.comment;
     newComment.save(function(error){
       if(error){res.send(error);}
-      res.status(201).json({message: 'planet successfully created'+ req.body.author+ req.body.comment});
+      res.status(201).json({message: 'comment successfully created'+ req.body.author+ req.body.comment});
     });
   });
 
