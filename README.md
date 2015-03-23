@@ -1,5 +1,5 @@
 # ReactJS-Tutorial
-some fun with ReactJS
+some fun with ReactJS using my own Node/Express/MongoDB backend
 https://radiant-dusk-6432.herokuapp.com/
 
 type="text/jsx" required for JSX in script tag but for production use the React tool to precompile:
