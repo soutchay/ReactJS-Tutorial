@@ -20,7 +20,6 @@ var CommentBox = React.createClass({
       url: this.props.url,
       dataType: 'json',
       success: function(data){
-        //console.log(data);
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err){
@@ -41,7 +40,8 @@ var CommentBox = React.createClass({
       data: comment,
       success: function(data) {
         console.log("submitting ", data);
-        this.setState({data: data});
+        //don't need to be setting state twice, not needed
+        //this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -67,20 +67,6 @@ var CommentBox = React.createClass({
       );
   }
 });
-
-//*****Original Comment List
-// var CommentList = React.createClass({
-//   render: function(){
-//     //Add comment to comment list which passes author name
-//     return (
-//     <div className="commentList">
-//       This be a Comment List
-//       <Comment author="Jon Jon">This is one comment</Comment>
-//       <Comment author="Ryan Ryan">This is another comment</Comment>
-//     </div>
-//     );
-//   }
-// });
 
 
 //**** COMMENLIST ****
@@ -144,13 +130,14 @@ var CommentForm = React.createClass({
 var Comment = React.createClass({
   render: function(){
     //so we can have an XSS attack, FB says to do add this for Showdown to work
+    //.children is the text
     var rawMarkup = converter.makeHtml(this.props.children.toString());
     //this.props.author is being passed from CommentList
     return (
     <div className="comment">
-      <h2 className="commentAuthor">
+      <h3 className="commentAuthor">
         {this.props.author}
-      </h2>
+      </h3>
       <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
     </div>
     )
