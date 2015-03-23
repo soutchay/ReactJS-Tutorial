@@ -86,9 +86,10 @@ var CommentList = React.createClass({
     //for each element object in data we get the author
     //we need a key to maintain identity and state of each child!
     var commentNodes = this.props.data.map(function(comment, index){
+      //comment.comment is the child! which gets passed to comment and gets converted
       return (
         <Comment author={comment.author} key={index}>
-          {comment.text}
+          {comment.comment}
         </Comment>
       )
     });
