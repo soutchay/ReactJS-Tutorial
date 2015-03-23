@@ -13,7 +13,7 @@ var data = [
 
 // data={this.props.data} allows CommentList to have access to data
 //this.prop are immutable but this.state is mutable which can be changed by calling this.setState()
-var CommentBox = React.createClass({displayName: "CommentBox",
+var CommentBox = React.createClass({
   //Set up polling
   loadCommentsFromServer: function(){
     $.ajax({
@@ -59,11 +59,11 @@ var CommentBox = React.createClass({displayName: "CommentBox",
   },
   render: function(){
     return (
-      React.createElement("div", {className: "commentBox"}, 
-        React.createElement("h1", null, "Comments"), 
-        React.createElement(CommentList, {data: this.state.data}), 
-        React.createElement(CommentForm, {onCommentSubmit: this.handleCommentSubmit})
-      )
+      <div className="commentBox">
+        <h1>Comments</h1>
+        <CommentList data={this.state.data} />
+        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+      </div>
       );
   }
 });
@@ -71,7 +71,7 @@ var CommentBox = React.createClass({displayName: "CommentBox",
 
 //**** COMMENLIST ****
 //New Comment List using data
-var CommentList = React.createClass({displayName: "CommentList",
+var CommentList = React.createClass({
   render: function(){
     //Add comment to comment list which passes author name
     //for each element object in data we get the author
@@ -79,24 +79,24 @@ var CommentList = React.createClass({displayName: "CommentList",
     var commentNodes = this.props.data.map(function(comment, index){
       //comment.comment is the child! which gets passed to comment and gets converted
       return (
-        React.createElement(Comment, {author: comment.author, key: index}, 
-          comment.comment
-        )
+        <Comment author={comment.author} key={index}>
+          {comment.comment}
+        </Comment>
       )
     });
     //commentNodes represents each individual object that gets returned
     return (
-    React.createElement("div", {className: "commentList"}, 
-      "This be a Comment List", 
-      commentNodes
-    )
+    <div className="commentList">
+      This be a Comment List
+      {commentNodes}
+    </div>
     );
   }
 });
 
 
 //*****COMMENT FORM******
-var CommentForm = React.createClass({displayName: "CommentForm",
+var CommentForm = React.createClass({
   handleSubmit: function(e){
     e.preventDefault();
     console.log(this.refs);
@@ -112,14 +112,14 @@ var CommentForm = React.createClass({displayName: "CommentForm",
   },
   render: function(){
     return (
-    React.createElement("div", {className: "commentForm"}, 
-      "Comment Form would go here", 
-      React.createElement("form", {className: "commentForm", onSubmit: this.handleSubmit}, 
-        React.createElement("input", {type: "text", ref: "author", placeholder: "Author"}), 
-        React.createElement("input", {type: "text", ref: "text", placeholder: "Make a comment"}), 
-        React.createElement("input", {type: "submit", value: "Post"})
-      )
-    )
+    <div className="commentForm">
+      Comment Form would go here
+      <form className="commentForm" onSubmit={this.handleSubmit}>
+        <input type="text" ref="author" placeholder="Author" />
+        <input type="text" ref="text" placeholder="Make a comment" />
+        <input type="submit" value="Post" />
+      </form>
+    </div>
     );
   }
 });
@@ -127,19 +127,19 @@ var CommentForm = React.createClass({displayName: "CommentForm",
 //*****COMMENT******
 //Set up props for comment
 //Depends on data being passed on from the parent
-var Comment = React.createClass({displayName: "Comment",
+var Comment = React.createClass({
   render: function(){
     //so we can have an XSS attack, FB says to do add this for Showdown to work
     //.children is the text
     var rawMarkup = converter.makeHtml(this.props.children.toString());
     //this.props.author is being passed from CommentList
     return (
-    React.createElement("div", {className: "comment"}, 
-      React.createElement("h3", {className: "commentAuthor"}, 
-        this.props.author
-      ), 
-      React.createElement("span", {dangerouslySetInnerHTML: {__html: rawMarkup}})
-    )
+    <div className="comment">
+      <h3 className="commentAuthor">
+        {this.props.author}
+      </h3>
+      <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+    </div>
     )
   }
 });
@@ -148,6 +148,6 @@ var Comment = React.createClass({displayName: "Comment",
 //calls render property to instantiate component and fires function to append CommentBox to id="content"
 //call on data to be var data defined above
 React.render(
-  React.createElement(CommentBox, {data: data, url: "/api", pollInterval: 2000}),
+  <CommentBox data={data} url="/api" pollInterval={2000}/>,
   document.getElementById('content')
   )
